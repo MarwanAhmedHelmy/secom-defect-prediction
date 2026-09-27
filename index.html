@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MarwanAhmed | Data&ML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0B1120; --bg-alt:#111A2E; --panel:#141F38;
+    --text:#E7EAF0; --text-dim:#9AA6B8; --line:rgba(255,255,255,0.09);
+    --accent:#5EEAD4; --accent-2:#FFB454;
+    --serif:'Space Grotesk',sans-serif; --sans:'Inter',sans-serif;
+  }
+  :root:not([data-theme="light"]){ color-scheme: dark; }
+  :root[data-theme="light"]{
+    --bg:#F5F3EE; --bg-alt:#ECE9E1; --panel:#FFFFFF;
+    --text:#141A26; --text-dim:#5B6270; --line:rgba(20,26,38,0.12);
+    --accent:#0F8C7C; --accent-2:#C97A2B;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px); scroll-behavior:smooth;}
+  html,body{height:100%;}
+  body{
+    background:var(--bg); color:var(--text); font-family:var(--sans);
+    padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+    line-height:1.6; -webkit-font-smoothing:antialiased;
+  }
+  img{max-width:100%; display:block;}
+  a{color:inherit;}
+  .wrap{max-width:920px; margin:0 auto; padding:0 24px;}
+  section{padding:88px 0;}
+  h1,h2,h3{font-family:var(--serif); font-weight:600; letter-spacing:-0.01em;}
+  .eyebrow{font-size:0.85rem; color:var(--accent); font-weight:500;}
+
+  /* NAV */
+  header.top{
+    position:sticky; top:0; top:env(safe-area-inset-top,0px); z-index:10;
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(8px); border-bottom:1px solid var(--line);
+  }
+  nav{display:flex; align-items:center; justify-content:space-between; padding:16px 24px; max-width:920px; margin:0 auto;}
+  nav .logo{font-family:var(--serif); font-weight:600; font-size:1.05rem;}
+  nav ul{display:flex; gap:22px; list-style:none;}
+  nav a{font-size:0.92rem; color:var(--text-dim); text-decoration:none;}
+  nav a:hover{color:var(--accent);}
+  nav .links{display:flex;}
+  @media (max-width:620px){ nav ul{display:none;} }
+
+  /* HERO */
+  .hero{padding:72px 0 40px; position:relative; overflow:hidden;}
+  .hero .wave{position:absolute; left:0; right:0; bottom:0; width:100%; height:140px; opacity:0.9;}
+  .hero-inner{position:relative; z-index:1;}
+  .hero h1{font-size:clamp(2.2rem,5.5vw,3.6rem); line-height:1.05; max-width:14ch;}
+  .hero p.usp{margin-top:16px; color:var(--accent); font-family:var(--serif); font-weight:500; font-size:1.12rem; max-width:52ch; line-height:1.4;}
+  .hero p.tagline{margin-top:14px; color:var(--text-dim); font-size:1.02rem; max-width:46ch;}
+  .hero .contact-row{margin-top:28px; display:flex; flex-wrap:wrap; gap:10px 22px; font-size:0.92rem; color:var(--text-dim);}
+  .hero .contact-row a{border-bottom:1px solid var(--line); padding-bottom:2px;}
+  .hero .contact-row a:hover{color:var(--accent); border-color:var(--accent);}
+
+  .noisy{stroke:var(--text-dim); opacity:0.9; animation:fadeOut 2.6s ease forwards;}
+  .smooth{stroke:var(--accent); opacity:0; stroke-dasharray:900; stroke-dashoffset:900; animation:drawIn 2.4s 0.9s ease forwards, fadeIn 0.1s 0.9s ease forwards;}
+  @keyframes fadeOut{ to{opacity:0;} }
+  @keyframes fadeIn{ to{opacity:1;} }
+  @keyframes drawIn{ to{stroke-dashoffset:0;} }
+  @media (prefers-reduced-motion:reduce){
+    .noisy{opacity:0; animation:none;}
+    .smooth{opacity:1; stroke-dashoffset:0; animation:none;}
+  }
+
+  /* ABOUT */
+  #about p{max-width:64ch; color:var(--text-dim); font-size:1.02rem;}
+  #about .lead{color:var(--text); font-size:1.08rem; margin-bottom:14px;}
+
+  /* SKILLS */
+  .skills-grid{display:grid; grid-template-columns:1fr 1fr; gap:0; border:1px solid var(--line); border-radius:4px; overflow:hidden; margin-top:28px;}
+  .skills-col{padding:26px 28px;}
+  .skills-col:first-child{border-right:1px solid var(--line);}
+  .skills-col h3{font-size:0.95rem; color:var(--text-dim); font-weight:500; margin-bottom:14px; font-family:var(--sans);}
+  .skills-col ul{list-style:none; display:flex; flex-direction:column; gap:9px;}
+  .skills-col li{font-size:0.96rem; padding-left:14px; border-left:2px solid var(--line); position:relative;}
+  .skills-col:first-child li{border-left-color:var(--accent);}
+  .skills-col:last-child li{border-left-color:var(--accent-2);}
+  @media (max-width:620px){ .skills-grid{grid-template-columns:1fr;} .skills-col:first-child{border-right:none; border-bottom:1px solid var(--line);} }
+
+  /* PROJECTS */
+  .project{border:1px solid var(--line); border-radius:4px; padding:32px; margin-top:22px; background:var(--panel);}
+  .project h3{font-size:1.3rem;}
+  .project .meta{color:var(--text-dim); font-size:0.88rem; margin-top:4px;}
+  .project p.desc{margin-top:16px; color:var(--text-dim); max-width:62ch;}
+  .project .stack{margin-top:18px; display:flex; flex-wrap:wrap; gap:8px;}
+  .tag{font-size:0.78rem; padding:4px 10px; border:1px solid var(--line); border-radius:20px; color:var(--text-dim);}
+  .project .metric{margin-top:18px; display:inline-flex; align-items:baseline; gap:8px;}
+  .project .metric .num{font-family:var(--serif); font-size:1.7rem; color:var(--accent);}
+  .project .metric .lbl{font-size:0.85rem; color:var(--text-dim);}
+  .project.clickable{cursor:pointer;}
+  .project.clickable:hover{border-color:var(--accent);}
+  .project .cta-hint{margin-top:18px; font-size:0.85rem; color:var(--accent);}
+
+  /* PROJECT DETAIL PAGES */
+  .detail-page{display:none;}
+  .detail-back{display:inline-flex; align-items:center; gap:6px; color:var(--text-dim); font-size:0.9rem; background:none; border:none; padding:0; cursor:pointer; font-family:var(--sans);}
+  .detail-back:hover{color:var(--accent);}
+  .detail-hero{padding:56px 0 36px; border-bottom:1px solid var(--line);}
+  .detail-hero h1{font-size:clamp(1.7rem,4.5vw,2.5rem); margin-top:16px; max-width:22ch;}
+  .detail-hero .meta{color:var(--text-dim); margin-top:10px; font-size:0.94rem;}
+  .detail-section{padding:44px 0; border-bottom:1px solid var(--line);}
+  .detail-section:last-of-type{border-bottom:none;}
+  .detail-section h2{font-size:1.25rem;}
+  .detail-section p{margin-top:14px; color:var(--text-dim); max-width:66ch;}
+  .pipeline-steps{list-style:none; counter-reset:step; margin-top:18px; display:flex; flex-direction:column; gap:18px;}
+  .pipeline-steps li{position:relative; padding-left:40px; counter-increment:step;}
+  .pipeline-steps li::before{content:counter(step); position:absolute; left:0; top:0; width:26px; height:26px; border:1px solid var(--accent); color:var(--accent); border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:0.8rem; font-family:var(--serif);}
+  .pipeline-steps li strong{display:block; color:var(--text); margin-bottom:3px; font-size:0.98rem;}
+  .pipeline-steps li span{color:var(--text-dim); font-size:0.92rem; max-width:60ch; display:block;}
+  .detail-metrics{display:flex; gap:36px; margin-top:6px; flex-wrap:wrap;}
+  .detail-metrics .num{font-family:var(--serif); font-size:1.9rem; color:var(--accent);}
+  .detail-metrics .lbl{color:var(--text-dim); font-size:0.84rem; margin-top:4px; max-width:20ch;}
+
+  /* EDU / CERTS / LANG */
+  .row-2{display:grid; grid-template-columns:1.3fr 1fr; gap:44px; margin-top:28px;}
+  @media (max-width:700px){ .row-2{grid-template-columns:1fr;} }
+  .edu-item h3{font-size:1.05rem;}
+  .edu-item .meta{color:var(--text-dim); font-size:0.9rem; margin-top:4px;}
+  .course-list{margin-top:18px; list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:8px 20px;}
+  .course-list li{font-size:0.88rem; color:var(--text-dim); padding-left:12px; border-left:1px solid var(--line);}
+  @media (max-width:500px){ .course-list{grid-template-columns:1fr;} }
+  .cert-list, .lang-list{list-style:none; display:flex; flex-direction:column; gap:12px;}
+  .cert-list li{font-size:0.94rem;}
+  .cert-list li span{display:block; color:var(--text-dim); font-size:0.84rem;}
+  .lang-list{margin-top:10px;}
+  .lang-list li{display:flex; justify-content:space-between; font-size:0.94rem; border-bottom:1px solid var(--line); padding-bottom:8px;}
+
+  footer{border-top:1px solid var(--line); padding:48px 0 60px;}
+  footer .wrap{display:flex; flex-wrap:wrap; justify-content:space-between; gap:16px; align-items:center;}
+  footer .name{font-family:var(--serif); font-weight:600;}
+  footer .links{display:flex; gap:18px; font-size:0.9rem; color:var(--text-dim);}
+  footer .links a:hover{color:var(--accent);}
+</style>
+</head>
+<body>
+
+<div id="main-view">
+<header class="top">
+  <nav>
+    <div class="logo">MarwanAhmed | Data&amp;ML</div>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#education">Education</a></li>
+    </ul>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <div class="eyebrow">AI & Machine Learning Engineer</div>
+    <h1>Marwan Ahmed Helmy</h1>
+    <p class="usp">Machine Learning Engineer specializing in predictive modeling for imbalanced classification and regression — turning raw industrial and behavioral data into production-grade decisions.</p>
+    <div class="contact-row">
+      <span>Giza, Egypt</span>
+      <a href="mailto:marwanahmed241213@gmail.com">marwanahmed241213@gmail.com</a>
+      <a href="tel:+201064860062">01064860062</a>
+      <a href="https://www.linkedin.com/in/marwan-ahmed-helmy" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+  <svg class="wave" viewBox="0 0 920 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+    <path class="noisy" fill="none" stroke-width="1.6" d="M0,90 L15,60 L30,105 L45,50 L60,95 L75,40 L90,110 L105,55 L120,88 L135,35 L150,100 L165,60 L180,92 L195,45 L210,105 L225,58 L240,90 L255,42 L270,98 L285,65 L300,88 L315,38 L330,102 L345,55 L360,92 L375,48 L390,100 L405,62 L420,86 L435,40 L450,96 L465,58 L480,90 L495,44 L510,104 L525,60 L540,88 L555,42 L570,98 L585,64 L600,90 L615,40 L630,100 L645,56 L660,92 L675,46 L690,102 L705,60 L720,86 L735,42 L750,96 L765,58 L780,90 L795,44 L810,100 L825,62 L840,88 L855,50 L870,94 L885,60 L900,86 L915,70"/>
+    <path class="smooth" fill="none" stroke-width="2.2" d="M0,90 C60,70 90,60 150,72 C220,86 260,55 330,64 C400,72 440,50 510,60 C580,70 620,48 690,58 C760,68 800,52 870,60 C890,62 905,64 915,66"/>
+  </svg>
+</section>
+
+<section id="about">
+  <div class="wrap">
+    <div class="eyebrow">About</div>
+    <p class="lead" style="margin-top:10px;">Aspiring AI & Machine Learning Engineer with a background in Communications and Electronics Engineering.</p>
+    <p>I combine strong foundations in mathematics, statistics and probability with hands-on experience in Python, data analysis, machine learning, deep learning and natural language processing. I like taking raw, messy data and turning it into models that solve real problems — usually starting with the same instinct I learned in signal processing: find the signal, ignore the noise.</p>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="wrap">
+    <div class="eyebrow">Skills</div>
+    <div class="skills-grid">
+      <div class="skills-col">
+        <h3>Technical</h3>
+        <ul>
+          <li>Python Programming</li>
+          <li>Data Analysis</li>
+          <li>Machine Learning</li>
+          <li>Deep Learning</li>
+          <li>Natural Language Processing (NLP)</li>
+          <li>Statistics & Probability</li>
+          <li>Data Cleaning & Preprocessing</li>
+          <li>NumPy / Pandas</li>
+          <li>Scikit-learn</li>
+          <li>Problem Solving</li>
+        </ul>
+      </div>
+      <div class="skills-col">
+        <h3>Non-technical</h3>
+        <ul>
+          <li>Leadership</li>
+          <li>Teamwork</li>
+          <li>Self Learner</li>
+          <li>Freelancing skills</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="wrap">
+    <div class="eyebrow">Projects</div>
+
+    <div class="project clickable" onclick="showDetail('secom')" onkeydown="if(event.key==='Enter')showDetail('secom')" role="button" tabindex="0">
+      <h3>SECOM Manufacturing Defect Prediction</h3>
+      <div class="meta">Industrial sensor data · Imbalanced classification</div>
+      <p class="desc">Built a classification pipeline on the SECOM industrial dataset — 1,567 samples across 590 sensor features — to predict manufacturing defects under severe class imbalance, where only 6.6% of units actually fail. Compared Logistic Regression, Random Forest and SVM using imbalance-aware metrics rather than plain accuracy.</p>
+      <div class="metric"><span class="num">76%</span><span class="lbl">defect-detection recall, after SMOTE + threshold tuning</span></div>
+      <div class="stack">
+        <span class="tag">Python</span><span class="tag">Scikit-learn</span><span class="tag">SMOTE</span>
+        <span class="tag">Precision / Recall / F1 / ROC-AUC</span><span class="tag">Threshold Tuning</span>
+      </div>
+      <div class="cta-hint">Read the full case study</div>
+    </div>
+
+    <div class="project clickable" onclick="showDetail('youtube')" onkeydown="if(event.key==='Enter')showDetail('youtube')" role="button" tabindex="0">
+      <h3>YouTube Trending Videos — Regression Analysis</h3>
+      <div class="meta">Kaggle dataset · EDA & model comparison</div>
+      <p class="desc">Took the YouTube Trending dataset from Kaggle through full EDA, cleaning, preprocessing and visualization, then trained and compared seven regression approaches to model what drives a trending video's performance — from a Linear Regression baseline up to modern gradient-boosting models.</p>
+      <div class="stack">
+        <span class="tag">Linear Regression</span><span class="tag">Random Forest</span><span class="tag">XGBoost</span>
+        <span class="tag">LightGBM</span><span class="tag">CatBoost</span><span class="tag">SVR</span>
+        <span class="tag">KNN Regressor</span><span class="tag">Extra Trees</span>
+      </div>
+      <div class="cta-hint">Read the full case study</div>
+    </div>
+
+
+  </div>
+</section>
+
+<section id="education">
+  <div class="wrap">
+    <div class="eyebrow">Education & Certifications</div>
+    <div class="row-2">
+      <div>
+        <div class="edu-item">
+          <h3>Bachelor of Electronics and Communications Engineering</h3>
+          <div class="meta">Beni-Suef University, Egypt · GPA 3.2 — Very Good</div>
+        </div>
+        <ul class="course-list">
+          <li>Digital Egypt Pioneers — Prompt Engineering</li>
+          <li>Statistics & Linear Algebra Basics</li>
+          <li>Python Programming</li>
+          <li>Python for Data Science, AI & Development</li>
+          <li>Preprocessing & Visualization</li>
+          <li>Machine Learning Techniques</li>
+          <li>Deep Learning</li>
+          <li>NLP with Attention Models</li>
+          <li>Computer Vision & Transfer Learning</li>
+          <li>Azure AI Fundamentals</li>
+          <li>Azure AI Engineer Associate</li>
+          <li>MLOps, MLflow & Hugging Face</li>
+        </ul>
+      </div>
+      <div>
+        <ul class="cert-list">
+          <li>Digital Egypt Pioneers Initiative<span>MCIT — 2025</span></li>
+          <li>DECI Innovation Day<span>Sponsored by Google — 2023</span></li>
+          <li>Digital Egypt Cubs Initiative<span>MCIT — 2023</span></li>
+        </ul>
+        <ul class="lang-list">
+          <li><span>Arabic</span><span>Native</span></li>
+          <li><span>English</span><span>Intermediate (B2)</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="name">Marwan Ahmed Helmy</div>
+    <div class="links">
+      <a href="mailto:marwanahmed241213@gmail.com">Email</a>
+      <a href="tel:+201064860062">Call</a>
+      <a href="https://www.linkedin.com/in/marwan-ahmed-helmy" target="_blank" rel="noopener">LinkedIn</a>
+    </div>
+  </div>
+</footer>
+</div>
+
+<div class="detail-page" id="detail-secom">
+  <div class="detail-hero wrap">
+    <button class="detail-back" onclick="showMain()">&larr; Back to portfolio</button>
+    <div class="eyebrow" style="margin-top:22px;">Case Study</div>
+    <h1>SECOM Manufacturing Defect Prediction</h1>
+    <div class="meta">Industrial sensor data · Imbalanced binary classification · Python / Scikit-learn</div>
+  </div>
+  <div class="wrap">
+    <section class="detail-section">
+      <h2>The problem</h2>
+      <p>On a semiconductor manufacturing line, hundreds of sensors record process conditions for every unit that comes off the line. Only a small fraction of units actually turn out defective — in this dataset, just 6.6%. That imbalance is the real challenge: a model that simply predicts "pass" for everything would already be right 93% of the time, while catching zero real defects. The goal wasn't raw accuracy — it was building a model that actually catches failing units before they leave the line.</p>
+    </section>
+    <section class="detail-section">
+      <h2>The data</h2>
+      <p>The SECOM dataset contains 1,567 production records, each described by 590 anonymized sensor and process-measurement features, with a binary pass/fail label. Like most real sensor data, it came with its own problems: missing readings, features with almost no variance, and clusters of sensors highly correlated with each other — all of which needed to be handled before any model could learn something meaningful.</p>
+    </section>
+    <section class="detail-section">
+      <h2>Pipeline</h2>
+      <ul class="pipeline-steps">
+        <li><strong>Cleaning & feature filtering</strong><span>Imputed missing sensor readings, dropped near-constant features, and reduced redundancy among highly correlated sensors.</span></li>
+        <li><strong>Exploratory data analysis</strong><span>Examined sensor distributions and correlation clusters to separate signal from noise.</span></li>
+        <li><strong>Stratified train/test split</strong><span>Preserved the 6.6% failure ratio in both sets so evaluation reflected the real class balance.</span></li>
+        <li><strong>Imbalance handling with SMOTE</strong><span>Applied SMOTE oversampling on the training data only, to avoid leaking synthetic samples into evaluation.</span></li>
+        <li><strong>Model comparison</strong><span>Trained and compared Logistic Regression (baseline), Random Forest, and SVM.</span></li>
+        <li><strong>Imbalance-aware evaluation</strong><span>Scored every model on Precision, Recall, F1 and ROC-AUC rather than accuracy, since recall on the defect class was what actually mattered.</span></li>
+        <li><strong>Threshold tuning</strong><span>Adjusted the decision threshold after training to push defect-detection recall higher, at a deliberate, measured cost to precision.</span></li>
+      </ul>
+    </section>
+    <section class="detail-section">
+      <h2>Result</h2>
+      <div class="detail-metrics">
+        <div class="m"><div class="num">76%</div><div class="lbl">defect-detection recall after SMOTE + threshold tuning</div></div>
+        <div class="m"><div class="num">590</div><div class="lbl">sensor features per unit</div></div>
+        <div class="m"><div class="num">6.6%</div><div class="lbl">real-world failure rate</div></div>
+      </div>
+      <p>Recall on the failure class improved substantially over the untuned baseline — meaning far fewer defective units would slip through undetected, which is the metric that actually matters on a production line.</p>
+    </section>
+    <section class="detail-section">
+      <h2>Stack</h2>
+      <div class="stack"><span class="tag">Python</span><span class="tag">Pandas / NumPy</span><span class="tag">Scikit-learn</span><span class="tag">imbalanced-learn (SMOTE)</span></div>
+      <p class="note">Code: <a href="https://github.com/MarwanAhmedHelmy/secom-defect-prediction" target="_blank" rel="noopener">github.com/MarwanAhmedHelmy/secom-defect-prediction</a></p>
+    </section>
+  </div>
+</div>
+
+<div class="detail-page" id="detail-youtube">
+  <div class="detail-hero wrap">
+    <button class="detail-back" onclick="showMain()">&larr; Back to portfolio</button>
+    <div class="eyebrow" style="margin-top:22px;">Case Study</div>
+    <h1>YouTube Trending Videos — Regression Analysis</h1>
+    <div class="meta">Kaggle dataset · Regression modeling · Python</div>
+  </div>
+  <div class="wrap">
+    <section class="detail-section">
+      <h2>The problem</h2>
+      <p>Trending videos on YouTube aren't random — engagement metrics like views, likes and comments follow patterns tied to category, timing and channel behavior. The goal was to model those patterns: given a video's metadata and engagement signals, estimate how it performs, and compare how different regression algorithms handle the messiness of real platform data.</p>
+    </section>
+    <section class="detail-section">
+      <h2>The data</h2>
+      <p>The dataset comes from Kaggle's YouTube Trending Videos collection, combining video metadata — title, category, channel, publish time — with engagement metrics such as views, likes and comments. Like most scraped platform data, it needed real cleanup before modeling: duplicate entries, inconsistent date formats, and categorical fields that needed proper encoding.</p>
+    </section>
+    <section class="detail-section">
+      <h2>Pipeline</h2>
+      <ul class="pipeline-steps">
+        <li><strong>Exploratory data analysis</strong><span>Studied how views, likes and comments were distributed across categories, and how strongly engagement metrics correlated with each other.</span></li>
+        <li><strong>Cleaning</strong><span>Removed duplicate records, handled missing fields, and standardized publish-date formats.</span></li>
+        <li><strong>Preprocessing</strong><span>Encoded categorical fields (category, publish weekday/hour) and scaled numeric features for the distance-based models.</span></li>
+        <li><strong>Visualization</strong><span>Built category-level trend charts and correlation heatmaps to guide feature choices before modeling.</span></li>
+        <li><strong>Baseline modeling</strong><span>Started with Linear Regression as a simple, interpretable baseline.</span></li>
+        <li><strong>Model comparison</strong><span>Trained and compared Random Forest, XGBoost, LightGBM, CatBoost, SVR, KNN Regressor and Extra Trees Regressor against the baseline.</span></li>
+      </ul>
+    </section>
+    <section class="detail-section">
+      <h2>What stood out</h2>
+      <p>The gradient-boosting models — XGBoost, LightGBM, CatBoost — handled the nonlinear relationships in engagement data more consistently than the Linear Regression baseline, which struggled once category and timing effects stopped behaving linearly. A good reminder that the "obvious" first model is a baseline to beat, not the answer.</p>
+    </section>
+    <section class="detail-section">
+      <h2>Stack</h2>
+      <div class="stack"><span class="tag">Python</span><span class="tag">Pandas / NumPy</span><span class="tag">Scikit-learn</span><span class="tag">XGBoost</span><span class="tag">LightGBM</span><span class="tag">CatBoost</span></div>
+      <p class="note">Code repository — coming soon.</p>
+    </section>
+  </div>
+</div>
+
+<script>
+  function showDetail(id){
+    document.getElementById('main-view').style.display='none';
+    document.querySelectorAll('.detail-page').forEach(function(el){ el.style.display='none'; });
+    document.getElementById('detail-'+id).style.display='block';
+    window.scrollTo(0,0);
+    history.pushState({detail:id}, '', '#project-'+id);
+  }
+  function showMain(){
+    document.querySelectorAll('.detail-page').forEach(function(el){ el.style.display='none'; });
+    document.getElementById('main-view').style.display='block';
+    window.scrollTo(0,0);
+    history.pushState({}, '', '#projects');
+  }
+  window.addEventListener('popstate', function(){
+    var h = location.hash.replace('#project-','');
+    if(location.hash.indexOf('#project-')===0 && (h==='secom'||h==='youtube')){
+      document.getElementById('main-view').style.display='none';
+      document.querySelectorAll('.detail-page').forEach(function(el){ el.style.display='none'; });
+      document.getElementById('detail-'+h).style.display='block';
+    } else {
+      document.querySelectorAll('.detail-page').forEach(function(el){ el.style.display='none'; });
+      document.getElementById('main-view').style.display='block';
+    }
+  });
+  (function(){
+    var h = location.hash.replace('#project-','');
+    if(location.hash.indexOf('#project-')===0 && (h==='secom'||h==='youtube')){
+      document.getElementById('main-view').style.display='none';
+      document.getElementById('detail-'+h).style.display='block';
+    }
+  })();
+</script>
+
+</body>
+</html>
